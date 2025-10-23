@@ -1,19 +1,23 @@
 :root{
 
---base-color:white;
+--base-color:rgba(242, 223, 182, 0.952);
 --text-color:black;
---navbar-color:pink;
---theme-button-color:palevioletred;
---theme-button-icon-color:rgb(245, 191, 90);
---theme-button-icon-color-hover: yellow;
+--navbar-color:rgb(220, 190, 135);
+--theme-button-color:rgba(114, 64, 7, 0.503);
+--theme-button-icon-color:rgba(246, 202, 6, 0.788);
+--theme-button-icon-color-hover: rgb(233, 213, 124);
+--about-button-color:rgba(114, 64, 7, 0.503);
+--about-button-color-hover:rgba(153, 102, 43, 0.503);
 }
 
 .darkmode{
-  --base-color:rgb(46, 46, 46);
+  --base-color:lab(18.39% 2.19 19.45 / 0.801);
 --text-color:rgb(255, 255, 255);
---navbar-color:rgb(59, 44, 59);
---theme-button-color:rgb(75, 40, 51);
---theme-button-icon-color:rgb(245, 191, 90);
+--navbar-color:rgba(164, 133, 74, 0.736);
+--theme-button-color:rgba(114, 64, 7, 0.503);
+--theme-button-icon-color: rgb(233, 213, 124);
+--about-button-color:rgba(114, 64, 7, 0.503);
+--about-button-color-hover:rgba(153, 102, 43, 0.503);
 }
 
 *{
@@ -30,6 +34,8 @@ body{
     align-items: center;
     background-color: var(--navbar-color);
     padding:5px;
+    box-shadow: 0 20px 20px 0 rgba(109, 75, 43, 0.637);
+    border-radius: 0 0 10px 10px;
 }
 #navbar-container {
   display: flex;
@@ -77,5 +83,29 @@ fill: var(--theme-button-icon-color-hover);
   display:block;
 }
 .darkmode #Travel-diary-label{
+  color: var(--text-color);
+}
+
+/* Butonul about + animatia de hover a acestuia */
+#About-Button{
+  height: 20px;
+  width: 60px;
+  background-color: var(--about-button-color);
+  border-radius: 24%;
+  padding: 0;
+  justify-content: center;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+/* lightmode */
+#About-Button:hover{
+background-color: var(--about-button-color-hover);
+}
+/* darkmode */
+.darkmode #About-Button:hover{
+background-color: var(--about-button-color-hover);
+}
+.darkmode #About-Button{
   color: var(--text-color);
 }
