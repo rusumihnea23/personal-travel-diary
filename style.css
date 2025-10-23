@@ -1,25 +1,81 @@
-*{
+:root{
 
+--base-color:white;
+--text-color:black;
+--navbar-color:pink;
+--theme-button-color:palevioletred;
+--theme-button-icon-color:rgb(245, 191, 90);
+--theme-button-icon-color-hover: yellow;
+}
+
+.darkmode{
+  --base-color:rgb(46, 46, 46);
+--text-color:rgb(255, 255, 255);
+--navbar-color:rgb(59, 44, 59);
+--theme-button-color:rgb(75, 40, 51);
+--theme-button-icon-color:rgb(245, 191, 90);
+}
+
+*{
 box-sizing: border-box;
 margin: 0;
 padding: 0;
+}
+body{
+  background-color: var(--base-color);
 }
 .navbar{
     display:flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    background-color: aqua;
-    
+    background-color: var(--navbar-color);
+    padding:5px;
 }
 #navbar-container {
   display: flex;
   align-items: center;   
-  gap: 10px;             
+  gap: 15px;      
+         
 }
+#Navbar-Button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto; 
+}
+#logo{
+  gap: 10px;
+}
+
+/* Butonul de schimbare a temei + animatia de hover a acestuia */
 #Theme-Button{
-    font-size: 20px;
-    padding: 0;
-    border: none;
-    
+  height: 50px;
+  width: 50px;
+  background-color: var(--theme-button-color);
+  border-radius: 45%;
+  padding: 0;
+   justify-content: center;
+   border: none;
+   display: flex;
+   align-items: center;
+}
+/* lightmode */
+#Theme-Button svg{
+fill: var(--theme-button-icon-color);
+}
+#Theme-Button svg:last-child{
+  display: none;
+}
+#Theme-Button svg:hover{
+fill: var(--theme-button-icon-color-hover);
+}
+/* darkmode */
+.darkmode #Theme-Button svg:first-child{
+  display: none;
+}
+.darkmode #Theme-Button svg:last-child{
+  display:block;
+}
+.darkmode #Travel-diary-label{
+  color: var(--text-color);
 }
