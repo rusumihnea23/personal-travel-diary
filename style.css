@@ -1,8 +1,7 @@
 :root{
-
---base-color:rgba(242, 223, 182, 0.952);
---text-color:black;
---navbar-color:rgb(220, 190, 135);
+--base-color:rgba(242, 223, 182, 1);
+--text-color:rgb(62, 49, 18);
+--navbar-color:rgb(215, 177, 107);
 --theme-button-color:rgba(114, 64, 7, 0.503);
 --theme-button-icon-color:rgba(246, 202, 6, 0.788);
 --theme-button-icon-color-hover: rgb(233, 213, 124);
@@ -11,47 +10,80 @@
 }
 
 .darkmode{
-  --base-color:lab(18.39% 2.19 19.45 / 0.801);
+--base-color:lab(16.18% 0.22 0.82 / 0.801);
 --text-color:rgb(255, 255, 255);
---navbar-color:rgba(164, 133, 74, 0.736);
---theme-button-color:rgba(114, 64, 7, 0.503);
---theme-button-icon-color: rgb(233, 213, 124);
---about-button-color:rgba(114, 64, 7, 0.503);
---about-button-color-hover:rgba(153, 102, 43, 0.503);
+--navbar-color:#474747;
+--theme-button-color:#1c1c1c;
+--theme-button-icon-colo: rgb(233, 213, 124);
+--theme-button-icon-color-hover: rgb(233, 213, 124);
+--about-button-color:#1c1c1c;
+--about-button-color-hover:rgba(31, 31, 31, 0.503);
 }
 
 *{
-box-sizing: border-box;
-margin: 0;
-padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
 body{
-  background-color: var(--base-color)!important;
+  background-color: var(--base-color);
+  background-color: #e5e5f7;
+  background-image:  linear-gradient(#e1cdb4 2px, transparent 2px), linear-gradient(to right, #e1cdb4 2px, #e5e5f7 2px);
+  background-size: 40px 40px;
 }
+
+.darkmode{
+  background-color: var(--base-color);
+  opacity: 1;
+  background-image:  linear-gradient(#1c1c1c 2px, transparent 2px), linear-gradient(to right, #1c1c1c 2px, #343433 2px);
+  background-size: 40px 40px;
+}
+
 .navbar{
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--navbar-color)!important; 
-    padding:5px;
-    box-shadow: 0 20px 20px 0 rgba(109, 75, 43, 0.637);
-    border-radius: 0 0 10px 10px;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--navbar-color)!important; 
+  padding:5px;
+  box-shadow: 0 30px 20px 0 rgba(155, 128, 63, 0.637);
+  border-radius: 0 0 10px 10px;
 }
+
+.darkmode .navbar{
+    box-shadow: 0 30px 20px 0 rgba(26, 25, 25, 0.637);
+}
+
 #container-fluid {
   background-color: var(--navbar-color)!important; 
   display: flex;
-  align-items:end ;  
-  gap: 15px;      
-  
-         
+  align-items:center ;  
+  gap: 15px;             
 }
+
 #Navbar-Button {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-left: auto; 
 }
+
 #logo{
-  gap: 10px;
+  gap: 15px;
+  padding: 10px;
+}
+
+.text-style{
+  margin: 0;
+  font-size: 18px; 
+  font-family:monospace;
+  color:var(--text-color);
+}
+
+.darkmode .text-style{
+  margin: 0;
+  font-size: 18px; 
+  font-family:monospace;
+  color:var(--text-color);
 }
 
 /* Butonul de schimbare a temei + animatia de hover a acestuia */
@@ -61,21 +93,23 @@ body{
   background-color: var(--theme-button-color);
   border-radius: 45%;
   padding: 0;
-   justify-content: center;
-   border: none;
-   display: flex;
-   align-items: center;
+  justify-content: center;
+  border: none;
+  display: flex;
+  align-items: center;
 }
+
 /* lightmode */
 #Theme-Button svg{
-fill: var(--theme-button-icon-color);
+  fill: var(--theme-button-icon-color);
 }
 #Theme-Button svg:last-child{
   display: none;
 }
 #Theme-Button svg:hover{
-fill: var(--theme-button-icon-color-hover);
+  fill: var(--theme-button-icon-color-hover);
 }
+
 /* darkmode */
 .darkmode #Theme-Button svg:first-child{
   display: none;
@@ -87,9 +121,9 @@ fill: var(--theme-button-icon-color-hover);
   color: var(--text-color);
 }
 .darkmode p{
-    color: var(--text-color);
-
+  color: var(--text-color);
 }
+
 /* Butonul about + animatia de hover a acestuia */
 #About-Button{
   height: 20px;
@@ -101,19 +135,24 @@ fill: var(--theme-button-icon-color-hover);
   display:flex;
   align-items: center;
   font-family:monospace;
-  
+  color: var(--text-color); 
 }
 #right-buttons{
   align-items: center;
   gap: 10px;
 }
+#left-buttons{
+  gap: 10px;
+}
+
 /* lightmode */
 #About-Button:hover{
-background-color: var(--about-button-color-hover);
+  background-color: var(--about-button-color-hover);
 }
+
 /* darkmode */
 .darkmode #About-Button:hover{
-background-color: var(--about-button-color-hover);
+  background-color: var(--about-button-color-hover);
 }
 .darkmode #About-Button{
   color: var(--text-color);
