@@ -157,3 +157,61 @@ body{
 .darkmode #About-Button{
   color: var(--text-color);
 }
+
+/* Fereastra Popup  */
+.modal-content {
+  background-color: var(--base-color);
+  color: var(--text-color);
+  border-radius: 20px;
+  padding: 10px;
+  animation: popupFadeIn 0.4s ease;
+}
+
+/* Headerul Ferestrei de Popup */
+.modal-header {
+  background-color: var(--navbar-color);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  color: var(--text-color);
+}
+
+.modal-title {
+  font-family:monospace;
+  font-weight: 600;
+}
+
+/* Corpul Popupului */
+.modal-body {
+  font-family:monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* Butonul close + animatia de hover a acestuia */
+.modal-footer .btn-secondary {
+  background-color: var(--about-button-color);
+  color: var(--text-color);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: var(--about-button-color-hover);
+}
+
+/* darkmode */
+.darkmode .modal-content {
+  background-color: #2b2b2b;
+  color: white;
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+}
+
+.darkmode .modal-header {
+  background-color: #3a3a3a;
+}
+
+.darkmode .Close-button {
+  filter: invert(1);
+}
+
