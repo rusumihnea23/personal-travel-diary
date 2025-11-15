@@ -26,7 +26,12 @@
   padding: 0;
 }
 
+html{
+  height: 100%;
+}
 body{
+  height: 100%;
+  width: 100%;
   background-color: var(--base-color);
   background-color: #e5e5f7;
   background-image:  linear-gradient(#e1cdb4 2px, transparent 2px), linear-gradient(to right, #e1cdb4 2px, #e5e5f7 2px);
@@ -53,7 +58,7 @@ body{
     box-shadow: 0 30px 20px 0 rgba(26, 25, 25, 0.637);
 }
 
-#container-fluid {
+#navbar-container {
   background-color: var(--navbar-color)!important; 
   display: flex;
   align-items:center ;  
@@ -215,3 +220,16 @@ body{
   filter: invert(1);
 }
 
+/* leaflet */
+#map {
+height: 50vh;
+width: 50vw;
+border: solid 2px var(--navbar-color);
+border-radius: 20px;
+}
+
+
+#map-container{
+margin-left: 10px;
+ margin-top: 50px;
+}
