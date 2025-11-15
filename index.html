@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel diary</title>
     <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./icons/diary.png">   
+    <link rel="icon" href="./icons/diary.png">  
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
 </head>
+
 <!-- navbar -->
 <nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
@@ -30,7 +32,31 @@
     </div>
   </div>
 </nav>
-<!-- pentru darkmode pune in body class="darkmode" -->
-<body class="darkmode">
+
+<!-- About Popup  -->
+<div class="modal fade" id="aboutPopup" tabindex="-1" aria-labelledby="aboutPopupLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="aboutPopupLabel">Here is what you can do with your Personal Travel Diary:</h5>
+      </div>
+      <div class="modal-body">
+        <ul>
+          <li>Mark the places you’ve visited on an interactive map</li>
+          <li>Add notes, stories, and memories for each location</li>
+          <li>Upload photos to remember your adventures</li>
+          <li>Enjoy documenting your journeys!</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- cum am conectat js-html  -->
+<script src="./script.js"></script> 
+
 </body>
 </html>
