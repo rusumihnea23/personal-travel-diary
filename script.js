@@ -33,4 +33,14 @@ const addTravelButton = document.getElementById('AddTravel-Button');
 addTravelButton.addEventListener('click', () => {
   const travelModal = new bootstrap.Modal(document.getElementById('addTravelPopup'));
   travelModal.show();
+
+
+  let saveTravelButton=document.getElementById('Save-Button');
+  saveTravelButton.addEventListener('click',()=>{
+    console.log('merge');
+    //travelModal.dispose();
+    travelModal.hide();
+  })
 });
+
+
