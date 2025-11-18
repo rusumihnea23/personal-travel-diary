@@ -197,6 +197,7 @@ body{
 .modal-footer .btn-secondary {
   background-color: var(--about-button-color);
   color: var(--text-color);
+  border: none;
   border-radius: 10px;
   transition: all 0.3s ease;
 }
@@ -231,5 +232,62 @@ border-radius: 20px;
 
 #map-container{
 margin-left: 10px;
- margin-top: 50px;
+ margin-top: 100px;
+}
+
+/* Butonul addTravel + animatia de hover a acestuia */
+#AddTravel-Button{
+  height: 40px;
+  width: 100px;
+  background-color: var(--about-button-color);
+  border-radius: 24%;
+  justify-content: center;
+  border: none;
+  display:flex;
+  align-items:center;
+  font-family:monospace;
+  color: var(--text-color); 
+  position: relative;
+  top:-11.7cm;
+  left: 91px; 
+}
+/* lightmode */
+#AddTravel-Button:hover{
+  background-color: var(--about-button-color-hover);
+}
+
+/* darkmode */
+.darkmode #AddTravel-Button:hover{
+  background-color: var(--about-button-color-hover);
+}
+.darkmode #AddTravel-Button{
+  color: var(--text-color);
+}
+
+/* Butonul save + animatia de hover a acestuia */
+.modal-footer .btn-primary {
+  background-color: var(--about-button-color);
+  color: var(--text-color);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: none ;  
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: var(--about-button-color-hover);
+}
+
+/* darkmode */
+.darkmode .modal-content {
+  background-color: #2b2b2b;
+  color: white;
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+}
+
+.darkmode .modal-header {
+  background-color: #3a3a3a;
+}
+
+.darkmode .Save-Button {
+  filter: invert(1);
 }

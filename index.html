@@ -70,6 +70,94 @@
   </div>
 </div>
 
+
+<button  id="AddTravel-Button"> Add Travel </button>  
+
+<!--AddTravel popup -->
+<div class="modal fade" id="addTravelPopup" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Enter your travel here!</h5>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Country -->
+        <label class="form-label">Country</label>
+        <input id="Country" type="text" class="form-control" placeholder="Enter country">
+
+        <!-- Type of trip -->
+        <label class="form-label">Type of trip</label>
+        <input id="Country" type="text" class="form-control" placeholder="solo/couple/group">
+         
+        <!-- Date -->
+          <div class="mb-3">
+            <label class="form-label">Beginning of trip</label>
+            <input type="date" class="form-control" id="dateInput" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">End of trip</label>
+            <input type="date" class="form-control" id="dateInput" required>
+          </div>
+
+        <!-- Checkboxes -->
+        <label class="form-label mt-3">Activities</label>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="chkLandmarks">
+          <label class="form-check-label">Visited Landmarks</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="chkFood">
+          <label class="form-check-label">Used public transport</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="chkFood">
+          <label class="form-check-label">Tried Local Restaurants</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="chkFood">
+          <label class="form-check-label">Went to the beach(if there was one)</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="chkFood">
+          <label class="form-check-label">Took a trip to Lidl</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="chkFood">
+          <label class="form-check-label">Ate at MCDonald's</label>
+        </div>
+
+        <!-- Description -->
+        <label class="form-label mt-3">Memories</label>
+        <textarea id="travelNotes" class="form-control" rows="10" placeholder="Describe your experience..."></textarea>
+
+        <!-- Money spent -->
+        <label class="form-label">Money spent</label>
+        <input id="Country" type="text" class="form-control" placeholder="How much did you spend?">
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button id="Save-Button" class="btn btn-primary">Save</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="travelLogsContainer">
+  <h3>My Travels</h3>
+  <div id="travelLogs"></div>
+</div>
+
  <!-- cum am conectat js-html  -->
 <script src="./script.js"></script> 
 

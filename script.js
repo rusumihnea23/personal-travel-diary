@@ -25,3 +25,12 @@
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 //LEAFLET END
+
+
+//Add-Travel button opens a new popup
+const addTravelButton = document.getElementById('AddTravel-Button');
+
+addTravelButton.addEventListener('click', () => {
+  const travelModal = new bootstrap.Modal(document.getElementById('addTravelPopup'));
+  travelModal.show();
+});
