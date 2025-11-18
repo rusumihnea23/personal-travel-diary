@@ -62,16 +62,12 @@
   </div>
 </div>
 <!-- leaflet -->
-<div class="container-fluid" id="map-container">
-  <div class="row justify-content-md-left">
-    <div class="col-12 col-md-6 ps-0">
-      <div id="map"></div>
-    </div>
-  </div>
+<div class="container-fluid d-flex flex-column align-items-center" id="map-container">
+  <div id="map" class="mb-3"></div>
+  <button id="AddTravel-Button" class="btn btn-custom">Add Travel</button>
 </div>
 
 
-<button  id="AddTravel-Button"> Add Travel </button>  
 
 <!--AddTravel popup -->
 <div class="modal fade" id="addTravelPopup" tabindex="-1">
@@ -154,7 +150,7 @@
 </div>
 
 <div id="travelLogsContainer">
-  <h3>My Travels</h3>
+  <h3>My Travels:</h3>
   <div id="travelLogs"></div>
 </div>
 
