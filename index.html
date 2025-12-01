@@ -88,11 +88,11 @@
       </div>
 
       <div class="modal-body">
-
+  <form id="travelForm" novalidate>
         <!-- Country -->
-        <label class="form-label">Country</label>
-        <input id="Country" type="text" class="form-control" placeholder="Enter country">
-
+        <label class="form-label" >Country</label>
+        <input id="Country" type="text"  class="form-control" placeholder="Enter country" required>
+        <div class="invalid-feedback">Please enter a country.</div>
         <!-- Type of trip -->
         <label class="form-label" for="tripType">Type of trip:</label>
         <select name="trips" id="tripType" class="form-select">
@@ -105,11 +105,13 @@
         <div class="mb-3">
           <label class="form-label">Beginning of trip</label>
           <input type="date" class="form-control" id="beginningDate" required>
+          <div class="invalid-feedback">Please choose a start date.</div>
         </div>
 
         <div class="mb-3">
           <label class="form-label">End of trip</label>
           <input type="date" class="form-control" id="endDate" required>
+          <div class="invalid-feedback">Please choose a end date.</div>
         </div>
 
         <!-- Checkboxes -->
@@ -151,6 +153,7 @@
         <!-- Money spent -->
         <label class="form-label">Money spent</label>
         <input id="expenses" type="text" class="form-control" placeholder="How much did you spend?">
+      </form>
       </div>
 
       <div class="modal-footer">

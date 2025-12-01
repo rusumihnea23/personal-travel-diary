@@ -40,7 +40,11 @@ let saveTravelButton = document.getElementById('Save-Button');
 saveTravelButton.addEventListener('click', () => {
   console.log('merge');
   //travelModal.dispose();
+   if (!validateForm()) {
+    return; // stop saving if invalid
+  }
   let travelLog = {};
+  travelLog.id = travelLogs.length + 1;
   travelLog.Country = document.getElementById("Country").value;
   travelLog.tripType = document.getElementById("tripType").value;
   travelLog.BeginningDate = document.getElementById("beginningDate").value;
@@ -72,10 +76,92 @@ saveTravelButton.addEventListener('click', () => {
   document.getElementById('activity6').checked = false;
   document.getElementById('travelNotes').value = null;
   document.getElementById('expenses').value = null;
-
+  LoadActivity();
 
 
 });
 
 
 
+  function LoadActivity() {
+
+  const log = travelLogs[travelLogs.length - 1];   // ← added
+  const id = log.id;                               // ← added
+
+  const dayDiv = document.createElement('div');
+  dayDiv.className = 'accordion';
+  dayDiv.id = `log-${id}`;                         // ← added (unique id for delete)
+
+  dayDiv.innerHTML = `
+  <div class="accordion-item">
+    <h2 class="accordion-header" >
+      <button class="accordion-button" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapse-${id}" aria-expanded="true">   <!-- ← changed -->
+        ${log.Country} - ${log.BeginningDate} to ${log.EndingDate}
+      </button>
+    </h2>
+
+    <div id="collapse-${id}" class="accordion-collapse collapse"
+         data-bs-parent="#accordionExample">                  <!-- ← changed -->
+      <div class="accordion-body">
+        <strong>Trip Type:</strong> ${log.tripType} <br>
+        <strong>Memories:</strong> ${log.Memories} <br>
+        <strong>Activities:</strong> ${log.activities.join(', ')} <br>
+        <strong>Expenses:</strong> ${log.Expenses} <br>
+
+      
+        <button class="btn btn-danger mt-2" onclick="deleteLog(${id})">
+          Delete
+        </button>
+        
+
+      </div>
+    </div>
+  </div>
+  `;
+
+  document.getElementById('travelLogsContainer').appendChild(dayDiv);
+}
+
+  function deleteLog(id) {
+  travelLogs = travelLogs.filter(log => log.id !== id);
+  const element = document.getElementById(`log-${id}`);
+  if (element) element.remove();
+  console.log("Remaining logs:", travelLogs);
+}
+
+  function validateForm() {
+let Form=document.getElementById("travelForm");
+let isValid=true;
+
+  let startDate = document.getElementById("beginningDate");
+  let endDate = document.getElementById("endDate");
+
+   let country = document.getElementById("Country");
+  if (country.value.trim() === "") {
+    country.classList.add("is-invalid");
+    isValid = false;
+  } else {
+    country.classList.remove("is-invalid");
+  }
+  
+  if (startDate.value === "") {
+    startDate.classList.add("is-invalid");
+    isValid = false;
+  } else {
+    startDate.classList.remove("is-invalid");
+  }
+
+  if (endDate.value === "") {
+    endDate.classList.add("is-invalid");
+    isValid = false;
+  } else if (endDate.value < startDate.value) {
+    endDate.classList.add("is-invalid");
+    endDate.nextElementSibling.textContent = "End date must be after start date.";
+    isValid = false;
+  } else {
+    endDate.classList.remove("is-invalid");
+    endDate.nextElementSibling.textContent = "Please choose an end date.";
+  }
+  return isValid;
+}

@@ -236,8 +236,8 @@ body{
 
 /* Butonul addTravel + animatia de hover a acestuia */
 #AddTravel-Button, .btn-custom {
-  height: 40px;
-  width: 120px;
+  height: 5vh;
+  width: 15vh;
   background-color: var(--about-button-color);
   border-radius: 24%;
   border: none;
