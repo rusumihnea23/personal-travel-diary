@@ -306,3 +306,15 @@ body{
   background-color: #2b2b2b;
   color: white;
 }
+
+/* country "dropdown" */
+#country-suggestions {
+  max-height: 220px;
+  overflow-y: auto;
+  cursor: pointer;
+  position: absolute;
+  width: 95%;
+  z-index: 9999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  font-family: monospace;
+}

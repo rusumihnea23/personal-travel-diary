@@ -89,10 +89,11 @@
 
       <div class="modal-body">
   <form id="travelForm" novalidate>
-        <!-- Country -->
-        <label class="form-label" >Country</label>
-        <input id="Country" type="text"  class="form-control" placeholder="Enter country" required>
-        <div class="invalid-feedback">Please enter a country.</div>
+        <!-- Country +added the country suggestions  -->
+        <label class="form-label">Country</label>
+        <input id="Country" type="text" class="form-control" placeholder="Please enter country" required oninput="showSuggestions()">
+        <div id="country-suggestions" class="list-group mt-1"></div>
+
         <!-- Type of trip -->
         <label class="form-label" for="tripType">Type of trip:</label>
         <select name="trips" id="tripType" class="form-select">
