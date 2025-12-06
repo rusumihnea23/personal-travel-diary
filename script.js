@@ -2,7 +2,7 @@ const themeButton = document.getElementById('Theme-Button');
 const aboutButton = document.getElementById('About-Button');
 const body = document.body;
 
-// Theme-button
+
 themeButton.addEventListener('click', () => {
   body.classList.toggle('darkmode');
   if (body.classList.contains('darkmode')) {
@@ -35,7 +35,203 @@ addTravelButton.addEventListener('click', () => {
   travelModal.show();
 });
 
-//The list of ISO Countries 
+//loading the countries and cities from the json file
+
+
+// Function that suggests countries when i type also i can press a country and select it
+function showSuggestions() {
+  const input = document.getElementById("Country").value.toLowerCase();//isn't case sensitive
+  const suggestionBox = document.getElementById("country-suggestions");
+
+  suggestionBox.innerHTML = "";
+  if (!input) return;
+
+  const allCountries = countryList[0].countries;
+
+  const results = allCountries.filter(c =>
+    c.name.toLowerCase().startsWith(input)
+  );
+
+  //creates a button for each country so i can select one
+  results.forEach(country => {
+    const item = document.createElement("button");
+    item.className = "list-group-item list-group-item-action";
+    item.textContent = `${country.name} ${country.iso}`;
+    item.onclick = () => selectCountry(country.name, country.iso);
+    suggestionBox.appendChild(item);
+  });
+}
+
+//when a country is clicked it puts it in the input box+then after selection the dropdown menu dissapears
+function selectCountry(name, iso) {
+  document.getElementById("Country").value = name;
+  document.getElementById("country-suggestions").innerHTML = "";
+  document.getElementById("Country").dataset.iso = iso;
+}
+
+//map marker function
+var markers=L.featureGroup();
+function addMarker(travelLog) {
+  fetch(`https://nominatim.openstreetmap.org/search?q=${travelLog.Country}&format=json&limit=1`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.length === 0) {
+        alert("Ai fost intr-un loc imaginar(Narnia)");
+        return;
+      }
+
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
+
+      
+      travelLog.Marker= L.marker([lat, lon]).addTo(map);;
+      markers.addLayer(travelLog.Marker);
+      // optional if i want the name of the country on top of the marker
+      //marker.bindPopup(`<b>${country}</b>`).openPopup();
+      map.fitBounds(markers.getBounds(), { padding: [50, 50] , maxZoom: 5});  
+    })
+    .catch(() => alert("Nu pot sa ma pun ajutor!"));
+}
+
+let saveTravelButton = document.getElementById('Save-Button');
+saveTravelButton.addEventListener('click', () => {
+  console.log('merge');
+  //travelModal.dispose();
+  if (!validateForm()) {
+    return; // stop saving if invalid
+  }
+  let travelLog = {};
+  travelLog.id = travelLogs.length + 1;
+  travelLog.Country = document.getElementById("Country").value;
+  travelLog.tripType = document.getElementById("tripType").value;
+  travelLog.BeginningDate = document.getElementById("beginningDate").value;
+  travelLog.EndingDate = document.getElementById("endDate").value;
+  let activities = [];
+  if (document.getElementById('activity1').checked) activities.push("Visited Landmarks");
+  if (document.getElementById('activity2').checked) activities.push("Used public transport");
+  if (document.getElementById('activity3').checked) activities.push("Tried Local Restaurants");
+  if (document.getElementById('activity4').checked) activities.push("Went to the beach");
+  if (document.getElementById('activity5').checked) activities.push("Took a trip to Lidl");
+  if (document.getElementById('activity6').checked) activities.push("Ate at MCDonald's");
+  travelLog.activities = activities;
+  travelLog.Memories = document.getElementById('travelNotes').value;
+  travelLog.Expenses = document.getElementById('expenses').value;
+
+  travelLogs.push(travelLog);
+  console.log(travelLogs);
+  travelModal.hide();
+
+  //put the marker in the country i have selected
+  addMarker(travelLog);
+
+  document.getElementById("Country").value = null;
+  document.getElementById("tripType").value=document.getElementById("tripType").options[0].value;
+  document.getElementById("beginningDate").value = null;
+  document.getElementById("endDate").value = null;
+  document.getElementById('activity1').checked = false;
+  document.getElementById('activity2').checked = false;
+  document.getElementById('activity3').checked = false;
+  document.getElementById('activity4').checked = false;
+  document.getElementById('activity5').checked = false;
+  document.getElementById('activity6').checked = false;
+  document.getElementById('travelNotes').value = null;
+  document.getElementById('expenses').value = null;
+  LoadActivity();
+
+});
+
+function LoadActivity() {
+
+  const log = travelLogs[travelLogs.length - 1];   // ← added
+  const id = log.id;                               // ← added
+
+  const dayDiv = document.createElement('div');
+  dayDiv.className = 'accordion';
+  dayDiv.id = `log-${id}`;                         // ← added (unique id for delete)
+
+  dayDiv.innerHTML = `
+  <div class="accordion-item">
+    <h2 class="accordion-header" >
+      <button class="accordion-button" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapse-${id}" aria-expanded="true">   <!-- ← changed -->
+        ${log.Country} - ${log.BeginningDate} to ${log.EndingDate}
+      </button>
+    </h2>
+
+    <div id="collapse-${id}" class="accordion-collapse collapse"
+         data-bs-parent="#accordionExample">                  <!-- ← changed -->
+      <div class="accordion-body">
+        <strong>Trip Type:</strong> ${log.tripType} <br>
+        <strong>Memories:</strong> <p style="word-break: break-all;">${log.Memories}</p> <br>
+        <strong>Activities:</strong> ${log.activities.join(', ')} <br>
+        <strong>Expenses:</strong> ${log.Expenses} <br>
+
+      
+        <button class="btn btn-danger mt-2" onclick="deleteLog(${id})">
+          Delete
+        </button>
+        
+
+      </div>
+    </div>
+  </div>
+  `;
+
+  document.getElementById('travelLogsContainer').appendChild(dayDiv);
+}
+
+function deleteLog(id) {
+  
+  
+  for(travelLog of travelLogs) {
+    if(travelLog.id == id) {
+    map.removeLayer(travelLog.Marker);
+    }
+  }
+  travelLogs = travelLogs.filter(log => log.id !== id);
+  const element = document.getElementById(`log-${id}`);
+  if (element) element.remove();
+}
+
+function validateForm() {
+  let Form = document.getElementById("travelForm");
+  let isValid = true;
+
+  let startDate = document.getElementById("beginningDate");
+  let endDate = document.getElementById("endDate");
+
+  let country = document.getElementById("Country");
+  if (country.value.trim() === "") {
+    country.classList.add("is-invalid");
+    isValid = false;
+  } else {
+    country.classList.remove("is-invalid");
+  }
+
+  if (startDate.value === "") {
+    startDate.classList.add("is-invalid");
+    isValid = false;
+  } else {
+    startDate.classList.remove("is-invalid");
+  }
+
+  if (endDate.value === "") {
+    endDate.classList.add("is-invalid");
+    isValid = false;
+  } else if (endDate.value < startDate.value) {
+    endDate.classList.add("is-invalid");
+    endDate.nextElementSibling.textContent = "End date must be after start date.";
+    isValid = false;
+  } else {
+    endDate.classList.remove("is-invalid");
+    endDate.nextElementSibling.textContent = "Please choose an end date.";
+  }
+  return isValid;
+}
+
+
+
+//The list of ISO Countries - we know its not idel but its the only way without an API call
 const countryList = [
   {
     region: "world",
@@ -288,189 +484,285 @@ const countryList = [
       { name: "Western Sahara", iso: "EH" },
       { name: "Yemen", iso: "YE" },
       { name: "Zambia", iso: "ZM" },
-      { name: "Zimbabwe", iso: "ZW" }
+      { name: "Zimbabwe", iso: "ZW" },
+      { name: "Tokyo", iso: "" },
+      { name: "New Delhi", iso: "" },
+      { name: "Beijing", iso: "" },
+      { name: "London", iso: "" },
+      { name: "Paris", iso: "" },
+      { name: "Berlin", iso: "" },
+      { name: "Rome", iso: "" },
+      { name: "Moscow", iso: "" },
+      { name: "Brasília", iso: "" },
+      { name: "Buenos Aires", iso: "" },
+      { name: "Cairo", iso: "" },
+      { name: "Mexico City", iso: "" },
+      { name: "Ottawa", iso: "" },
+      { name: "Canberra", iso: "" },
+      { name: "Pretoria", iso: "" },
+      { name: "Seoul", iso: "" },
+      { name: "Jakarta", iso: "" },
+      { name: "Madrid", iso: "" },
+      { name: "Amsterdam", iso: "" },
+      { name: "Vienna", iso: "" },
+      { name: "Lisbon", iso: "" },
+      { name: "Helsinki", iso: "" },
+      { name: "Stockholm", iso: "" },
+      { name: "Warsaw", iso: "" },
+      { name: "Bucharest", iso: "" },
+      { name: "Athens", iso: "" },
+      { name: "Dublin", iso: "" },
+      { name: "Brussels", iso: "" },
+      { name: "New York", iso: "" },
+      { name: "Los Angeles", iso: "" },
+      { name: "Chicago", iso: "" },
+      { name: "Houston", iso: "" },
+      { name: "Phoenix", iso: "" },
+      { name: "Philadelphia", iso: "" },
+      { name: "San Antonio", iso: "" },
+      { name: "San Diego", iso: "" },
+      { name: "Dallas", iso: "" },
+      { name: "San Jose", iso: "" },
+      { name: "Austin", iso: "" },
+      { name: "Jacksonville", iso: "" },
+      { name: "Fort Worth", iso: "" },
+      { name: "Columbus", iso: "" },
+      { name: "Charlotte", iso: "" },
+      { name: "San Francisco", iso: "" },
+      { name: "Indianapolis", iso: "" },
+      { name: "Seattle", iso: "" },
+      { name: "Denver", iso: "" },
+      { name: "Washington", iso: "" },
+      { name: "Boston", iso: "" },
+      { name: "El Paso", iso: "" },
+      { name: "Nashville", iso: "" },
+      { name: "Detroit", iso: "" },
+      { name: "Oklahoma City", iso: "" },
+      { name: "Portland", iso: "" },
+      { name: "Memphis", iso: "" },
+      { name: "Las Vegas", iso: "" },
+      { name: "Louisville", iso: "" },
+      { name: "Baltimore", iso: "" },
+      { name: "Milwaukee", iso: "" },
+      { name: "Albuquerque", iso: "" },
+      { name: "Tucson", iso: "" },
+      { name: "Fresno", iso: "" },
+      { name: "Sacramento", iso: "" },
+      { name: "Mesa", iso: "" },
+      { name: "Kansas City", iso: "" },
+      { name: "Atlanta", iso: "" },
+      { name: "Omaha", iso: "" },
+      { name: "Colorado Springs", iso: "" },
+      { name: "Raleigh", iso: "" },
+      { name: "Miami", iso: "" },
+      { name: "Virginia Beach", iso: "" },
+      { name: "Oakland", iso: "" },
+      { name: "Minneapolis", iso: "" },
+      { name: "Tulsa", iso: "" },
+      { name: "Wichita", iso: "" },
+      { name: "New Orleans", iso: "" },
+      { name: "Arlington", iso: "" },
+      { name: "Tampa", iso: "" },
+      { name: "Corpus Christi", iso: "" },
+      { name: "Cleveland", iso: "" },
+      { name: "St. Louis", iso: "" },
+      { name: "Pittsburgh", iso: "" },
+      { name: "Hamburg", iso: "" },
+      { name: "Munich", iso: "" },
+      { name: "Cologne", iso: "" },
+      { name: "Frankfurt", iso: "" },
+      { name: "Stuttgart", iso: "" }, 
+      { name: "Marseille", iso: "" },
+      { name: "Lyon", iso: "" },
+      { name: "Toulouse", iso: "" },
+      { name: "Nice", iso: "" },
+      { name: "Bordeaux", iso: "" }, 
+      { name: "Milan", iso: "" },
+      { name: "Naples", iso: "" },
+      { name: "Turin", iso: "" },
+      { name: "Palermo", iso: "" },
+      { name: "Genoa", iso: "" }, 
+      { name: "Barcelona", iso: "" },
+      { name: "Valencia", iso: "" },
+      { name: "Seville", iso: "" },
+      { name: "Zaragoza", iso: "" },
+      { name: "Málaga", iso: "" }, 
+      { name: "Saint Petersburg", iso: "" },
+      { name: "Novosibirsk", iso: "" },
+      { name: "Yekaterinburg", iso: "" },
+      { name: "Kazan", iso: "" },
+      { name: "Nizhny Novgorod", iso: "" }, 
+      { name: "Birmingham", iso: "" },
+      { name: "Manchester", iso: "" },
+      { name: "Glasgow", iso: "" },
+      { name: "Liverpool", iso: "" },
+      { name: "Leeds", iso: "" },
+      { name: "Bristol", iso: "" },
+      { name: "Sheffield", iso: "" },
+      { name: "Cluj-Napoca", iso: "" },
+      { name: "Timișoara", iso: "" },
+      { name: "Iași", iso: "" },
+      { name: "Constanța", iso: "" },
+      { name: "Craiova", iso: "" }, 
+      { name: "Rotterdam", iso: "" },
+      { name: "Hague", iso: "" },
+      { name: "Utrecht", iso: "" },
+      { name: "Eindhoven", iso: "" },
+      { name: "Groningen", iso: "" }, 
+      { name: "Shanghai", iso: "" },
+      { name: "Mumbai", iso: "" },
+      { name: "Shenzhen", iso: "" },
+      { name: "Guangzhou", iso: "" },
+      { name: "Manila", iso: "" },
+      { name: "Bangkok", iso: "" },
+      { name: "Ho Chi Minh City", iso: "" },
+      { name: "Dubai", iso: "" },
+      { name: "Karachi", iso: "" },
+      { name: "Delhi", iso: "" },
+      { name: "Kolkata", iso: "" },
+      { name: "Chennai", iso: "" }, 
+      { name: "Tianjin", iso: "" },
+      { name: "Chongqing", iso: "" },
+      { name: "Chengdu", iso: "" },
+      { name: "Nanjing", iso: "" },
+      { name: "Wuhan", iso: "" }, 
+      { name: "Seongnam", iso: "" },
+      { name: "Suwon", iso: "" },
+      { name: "Daejeon", iso: "" },
+      { name: "Busan", iso: "" },
+      { name: "Incheon", iso: "" }, 
+      { name: "Osaka", iso: "" },
+      { name: "Nagoya", iso: "" },
+      { name: "Sapporo", iso: "" },
+      { name: "Fukuoka", iso: "" },
+      { name: "Lahore", iso: "" },
+      { name: "Faisalabad", iso: "" },
+      { name: "Rawalpindi", iso: "" },
+      { name: "Multan", iso: "" }, 
+      { name: "Riyadh", iso: "" },
+      { name: "Jeddah", iso: "" },
+      { name: "Tehran", iso: "" }, 
+      { name: "Baghdad", iso: "" }, 
+      { name: "Kuala Lumpur", iso: "" }, 
+      { name: "George Town", iso: "" },
+      { name: "Ipoh", iso: "" },
+      { name: "Johor Bahru", iso: "" },
+      { name: "Kota Kinabalu", iso: "" },
+      { name: "São Paulo", iso: "" },
+      { name: "Rio de Janeiro", iso: "" }, 
+      { name: "Salvador", iso: "" },
+      { name: "Brasília", iso: "" },
+      { name: "Fortaleza", iso: "" },
+      { name: "Guadalajara", iso: "" },
+      { name: "Monterrey", iso: "" }, 
+      { name: "Toronto", iso: "" },
+      { name: "Montreal", iso: "" },
+      { name: "Vancouver", iso: "" }, 
+      { name: "Bogotá", iso: "" }, 
+      { name: "Lima", iso: "" },
+      { name: "Santiago", iso: "" }, 
+      { name: "Lagos", iso: "" },
+      { name: "Ibadan", iso: "" }, 
+      { name: "Kinshasa", iso: "" }, 
+      { name: "Johannesburg", iso: "" },
+      { name: "Durban", iso: "" },
+      { name: "Cape Town", iso: "" }, 
+      { name: "Alexandria", iso: "" }, 
+      { name: "Nairobi", iso: "" }, 
+      { name: "Budapest", iso: "" }, 
+      { name: "Prague", iso: "" }, 
+      { name: "Krakow", iso: "" }, 
+      { name: "Kyiv", iso: "" },
+      { name: "Kharkiv", iso: "" }, 
+      { name: "Belgrade", iso: "" },
+      { name: "Sofia", iso: "" }, 
+      { name: "Zagreb", iso: "" },
+      { name: "Istanbul", iso: "" },
+      { name: "Ankara", iso: "" },
+      { name: "Sydney", iso: "" },
+      { name: "Melbourne", iso: "" },
+      { name: "Perth", iso: "" },
+      { name: "Brisbane", iso: "" }, 
+      { name: "Auckland", iso: "" }, 
+      { name: "Surabaya", iso: "" }, 
+      { name: "Bandung", iso: "" }, 
+      { name: "Medan", iso: "" },
+      { name: "Pattaya", iso: "" }, 
+      { name: "Chiang Mai", iso: "" },
+      { name: "Phnom Penh", iso: "" },
+      { name: "Hanoi", iso: "" }, 
+      { name: "Yangon", iso: "" }, 
+      { name: "Taipei", iso: "" }, 
+      { name: "Hiroshima", iso: "" }, 
+      { name: "Fukuoka", iso: "" }, 
+      { name: "Abu Dhabi", iso: "" }, 
+      { name: "Doha", iso: "" }, 
+      { name: "Kuwait City", iso: "" }, 
+      { name: "Amman", iso: "" }, 
+      { name: "Beirut", iso: "" }, 
+      { name: "Tashkent", iso: "" }, 
+      { name: "Porto", iso: "" },
+      { name: "Zurich", iso: "" }, 
+      { name: "Geneva", iso: "" }, 
+      { name: "Brussels", iso: "" }, 
+      { name: "Ghent", iso: "" }, 
+      { name: "Antwerp", iso: "" },
+      { name: "Oslo", iso: "" }, 
+      { name: "Copenhagen", iso: "" }, 
+      { name: "Cork", iso: "" },
+      { name: "Accra", iso: "" }, 
+      { name: "Luanda", iso: "" }, 
+      { name: "Khartoum", iso: "" }, 
+      { name: "Casablanca", iso: "" }, 
+      { name: "Marrakech", iso: "" }, 
+      { name: "Algiers", iso: "" }, 
+      { name: "Tunis", iso: "" }, 
+      { name: "Calgary", iso: "" }, 
+      { name: "Edmonton", iso: "" }, 
+      { name: "Havana", iso: "" }, 
+      { name: "Medellín", iso: "" }, 
+      { name: "Salvador", iso: "" }, 
+      { name: "Fortaleza", iso: "" }, 
+      { name: "Quito", iso: "" }, 
+      { name: "Caracas", iso: "" }, 
+      { name: "Cincinnati", iso: "" },
+      { name: "Providence", iso: "" },
+      { name: "Salt Lake City", iso: "" },
+      { name: "Honolulu", iso: "" },
+      { name: "Anchorage", iso: "" },
+      { name: "Riverside", iso: "" },
+      { name: "Adelaide", iso: "" }, 
+      { name: "Wellington", iso: "" }, 
+      { name: "Brașov", iso: "" },
+      { name: "Galați", iso: "" },
+      { name: "Ploiești", iso: "" },
+      { name: "Oradea", iso: "" },
+      { name: "Brăila", iso: "" },
+      { name: "Arad", iso: "" },
+      { name: "Pitești", iso: "" },
+      { name: "Sibiu", iso: "" },
+      { name: "Târgu Mureș", iso: "" },
+      { name: "Bologna", iso: "" },
+      { name: "Florence", iso: "" }, 
+      { name: "Bari", iso: "" },
+      { name: "Catania", iso: "" },
+      { name: "Venice", iso: "" }, 
+      { name: "Verona", iso: "" },
+      { name: "Padua", iso: "" }, 
+      { name: "Trieste", iso: "" },
+      { name: "Bilbao", iso: "" },
+      { name: "Alicante", iso: "" },
+      { name: "Murcia", iso: "" },
+      { name: "Las Palmas", iso: "" },
+      { name: "Córdoba", iso: "" },
+      { name: "Valladolid", iso: "" },
+      { name: "Vigo", iso: "" },
+      { name: "Granada", iso: "" },
+      { name: "Thessaloniki", iso: "" },
+      { name: "Patras", iso: "" },
+      { name: "Heraklion", iso: "" }, 
+      { name: "Larissa", iso: "" },
+      { name: "Rhodes", iso: "" }, 
     ]
   }
 ];
-
-// Function that suggests countries when i type also i can press a country and select it
-function showSuggestions() {
-  const input = document.getElementById("Country").value.toLowerCase();//isn't case sensitive
-  const suggestionBox = document.getElementById("country-suggestions");
-
-  suggestionBox.innerHTML = "";
-  if (!input) return;
-
-  const allCountries = countryList[0].countries;
-
-  const results = allCountries.filter(c =>
-    c.name.toLowerCase().startsWith(input)
-  );
-
-  //creates a button for each country so i can select one
-  results.forEach(country => {
-    const item = document.createElement("button");
-    item.className = "list-group-item list-group-item-action";
-    item.textContent = `${country.name} (${country.iso})`;
-    item.onclick = () => selectCountry(country.name, country.iso);
-    suggestionBox.appendChild(item);
-  });
-}
-
-//when a country is clicked it puts it in the input box+then after selection the dropdown menu dissapears
-function selectCountry(name, iso) {
-  document.getElementById("Country").value = name;
-  document.getElementById("country-suggestions").innerHTML = "";
-  document.getElementById("Country").dataset.iso = iso;
-}
-
-//map marker function
-function addMarker(country) {
-  fetch(`https://nominatim.openstreetmap.org/search?q=${country}&format=json&limit=1`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.length === 0) {
-        alert("Ai fost intr-un loc imaginar(Narnia)");
-        return;
-      }
-
-      const lat = parseFloat(data[0].lat);
-      const lon = parseFloat(data[0].lon);
-
-      const marker = L.marker([lat, lon]).addTo(map);
-      // optional if i want the name of the country on top of the marker
-      //marker.bindPopup(`<b>${country}</b>`).openPopup();
-      map.setView([lat, lon], 5);
-    })
-    .catch(() => alert("Nu pot sa ma pun ajutor!"));
-}
-
-let saveTravelButton = document.getElementById('Save-Button');
-saveTravelButton.addEventListener('click', () => {
-  console.log('merge');
-  //travelModal.dispose();
-  if (!validateForm()) {
-    return; // stop saving if invalid
-  }
-  let travelLog = {};
-  travelLog.id = travelLogs.length + 1;
-  travelLog.Country = document.getElementById("Country").value;
-  travelLog.tripType = document.getElementById("tripType").value;
-  travelLog.BeginningDate = document.getElementById("beginningDate").value;
-  travelLog.EndingDate = document.getElementById("endDate").value;
-  let activities = [];
-  if (document.getElementById('activity1').checked) activities.push("Visited Landmarks");
-  if (document.getElementById('activity2').checked) activities.push("Used public transport");
-  if (document.getElementById('activity3').checked) activities.push("Tried Local Restaurants");
-  if (document.getElementById('activity4').checked) activities.push("Went to the beach");
-  if (document.getElementById('activity5').checked) activities.push("Took a trip to Lidl");
-  if (document.getElementById('activity6').checked) activities.push("Ate at MCDonald's");
-  travelLog.activities = activities;
-  travelLog.Memories = document.getElementById('travelNotes').value;
-  travelLog.Expenses = document.getElementById('expenses').value;
-
-  travelLogs.push(travelLog);
-  console.log(travelLogs);
-  travelModal.hide();
-
-  //put the marker in the country i have selected
-  addMarker(travelLog.Country);
-
-  document.getElementById("Country").value = null;
-  document.getElementById("tripType").value = null;
-  document.getElementById("beginningDate").value = null;
-  document.getElementById("endDate").value = null;
-  document.getElementById('activity1').checked = false;
-  document.getElementById('activity2').checked = false;
-  document.getElementById('activity3').checked = false;
-  document.getElementById('activity4').checked = false;
-  document.getElementById('activity5').checked = false;
-  document.getElementById('activity6').checked = false;
-  document.getElementById('travelNotes').value = null;
-  document.getElementById('expenses').value = null;
-  LoadActivity();
-
-});
-
-function LoadActivity() {
-
-  const log = travelLogs[travelLogs.length - 1];   // ← added
-  const id = log.id;                               // ← added
-
-  const dayDiv = document.createElement('div');
-  dayDiv.className = 'accordion';
-  dayDiv.id = `log-${id}`;                         // ← added (unique id for delete)
-
-  dayDiv.innerHTML = `
-  <div class="accordion-item">
-    <h2 class="accordion-header" >
-      <button class="accordion-button" type="button" data-bs-toggle="collapse"
-        data-bs-target="#collapse-${id}" aria-expanded="true">   <!-- ← changed -->
-        ${log.Country} - ${log.BeginningDate} to ${log.EndingDate}
-      </button>
-    </h2>
-
-    <div id="collapse-${id}" class="accordion-collapse collapse"
-         data-bs-parent="#accordionExample">                  <!-- ← changed -->
-      <div class="accordion-body">
-        <strong>Trip Type:</strong> ${log.tripType} <br>
-        <strong>Memories:</strong> ${log.Memories} <br>
-        <strong>Activities:</strong> ${log.activities.join(', ')} <br>
-        <strong>Expenses:</strong> ${log.Expenses} <br>
-
-      
-        <button class="btn btn-danger mt-2" onclick="deleteLog(${id})">
-          Delete
-        </button>
-        
-
-      </div>
-    </div>
-  </div>
-  `;
-
-  document.getElementById('travelLogsContainer').appendChild(dayDiv);
-}
-
-function deleteLog(id) {
-  travelLogs = travelLogs.filter(log => log.id !== id);
-  const element = document.getElementById(`log-${id}`);
-  if (element) element.remove();
-  console.log("Remaining logs:", travelLogs);
-}
-
-function validateForm() {
-  let Form = document.getElementById("travelForm");
-  let isValid = true;
-
-  let startDate = document.getElementById("beginningDate");
-  let endDate = document.getElementById("endDate");
-
-  let country = document.getElementById("Country");
-  if (country.value.trim() === "") {
-    country.classList.add("is-invalid");
-    isValid = false;
-  } else {
-    country.classList.remove("is-invalid");
-  }
-
-  if (startDate.value === "") {
-    startDate.classList.add("is-invalid");
-    isValid = false;
-  } else {
-    startDate.classList.remove("is-invalid");
-  }
-
-  if (endDate.value === "") {
-    endDate.classList.add("is-invalid");
-    isValid = false;
-  } else if (endDate.value < startDate.value) {
-    endDate.classList.add("is-invalid");
-    endDate.nextElementSibling.textContent = "End date must be after start date.";
-    isValid = false;
-  } else {
-    endDate.classList.remove("is-invalid");
-    endDate.nextElementSibling.textContent = "Please choose an end date.";
-  }
-  return isValid;
-}
