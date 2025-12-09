@@ -2,7 +2,6 @@ const themeButton = document.getElementById('Theme-Button');
 const aboutButton = document.getElementById('About-Button');
 const body = document.body;
 
-
 themeButton.addEventListener('click', () => {
   body.classList.toggle('darkmode');
   if (body.classList.contains('darkmode')) {
@@ -34,9 +33,6 @@ const travelModal = new bootstrap.Modal(document.getElementById('addTravelPopup'
 addTravelButton.addEventListener('click', () => {
   travelModal.show();
 });
-
-//loading the countries and cities from the json file
-
 
 // Function that suggests countries when i type also i can press a country and select it
 function showSuggestions() {
@@ -70,7 +66,7 @@ function selectCountry(name, iso) {
 }
 
 //map marker function
-var markers=L.featureGroup();
+var markers = L.featureGroup();
 function addMarker(travelLog) {
   fetch(`https://nominatim.openstreetmap.org/search?q=${travelLog.Country}&format=json&limit=1`)
     .then(res => res.json())
@@ -83,12 +79,12 @@ function addMarker(travelLog) {
       const lat = parseFloat(data[0].lat);
       const lon = parseFloat(data[0].lon);
 
-      
-      travelLog.Marker= L.marker([lat, lon]).addTo(map);;
+
+      travelLog.Marker = L.marker([lat, lon]).addTo(map);;
       markers.addLayer(travelLog.Marker);
       // optional if i want the name of the country on top of the marker
       //marker.bindPopup(`<b>${country}</b>`).openPopup();
-      map.fitBounds(markers.getBounds(), { padding: [50, 50] , maxZoom: 5});  
+      map.fitBounds(markers.getBounds(), { padding: [50, 50], maxZoom: 5 });
     })
     .catch(() => alert("Nu pot sa ma pun ajutor!"));
 }
@@ -125,7 +121,7 @@ saveTravelButton.addEventListener('click', () => {
   addMarker(travelLog);
 
   document.getElementById("Country").value = null;
-  document.getElementById("tripType").value=document.getElementById("tripType").options[0].value;
+  document.getElementById("tripType").value = document.getElementById("tripType").options[0].value;
   document.getElementById("beginningDate").value = null;
   document.getElementById("endDate").value = null;
   document.getElementById('activity1').checked = false;
@@ -181,11 +177,11 @@ function LoadActivity() {
 }
 
 function deleteLog(id) {
-  
-  
-  for(travelLog of travelLogs) {
-    if(travelLog.id == id) {
-    map.removeLayer(travelLog.Marker);
+
+
+  for (travelLog of travelLogs) {
+    if (travelLog.id == id) {
+      map.removeLayer(travelLog.Marker);
     }
   }
   travelLogs = travelLogs.filter(log => log.id !== id);
@@ -228,8 +224,6 @@ function validateForm() {
   }
   return isValid;
 }
-
-
 
 //The list of ISO Countries - we know its not idel but its the only way without an API call
 const countryList = [
@@ -571,27 +565,27 @@ const countryList = [
       { name: "Munich", iso: "" },
       { name: "Cologne", iso: "" },
       { name: "Frankfurt", iso: "" },
-      { name: "Stuttgart", iso: "" }, 
+      { name: "Stuttgart", iso: "" },
       { name: "Marseille", iso: "" },
       { name: "Lyon", iso: "" },
       { name: "Toulouse", iso: "" },
       { name: "Nice", iso: "" },
-      { name: "Bordeaux", iso: "" }, 
+      { name: "Bordeaux", iso: "" },
       { name: "Milan", iso: "" },
       { name: "Naples", iso: "" },
       { name: "Turin", iso: "" },
       { name: "Palermo", iso: "" },
-      { name: "Genoa", iso: "" }, 
+      { name: "Genoa", iso: "" },
       { name: "Barcelona", iso: "" },
       { name: "Valencia", iso: "" },
       { name: "Seville", iso: "" },
       { name: "Zaragoza", iso: "" },
-      { name: "Málaga", iso: "" }, 
+      { name: "Málaga", iso: "" },
       { name: "Saint Petersburg", iso: "" },
       { name: "Novosibirsk", iso: "" },
       { name: "Yekaterinburg", iso: "" },
       { name: "Kazan", iso: "" },
-      { name: "Nizhny Novgorod", iso: "" }, 
+      { name: "Nizhny Novgorod", iso: "" },
       { name: "Birmingham", iso: "" },
       { name: "Manchester", iso: "" },
       { name: "Glasgow", iso: "" },
@@ -603,12 +597,12 @@ const countryList = [
       { name: "Timișoara", iso: "" },
       { name: "Iași", iso: "" },
       { name: "Constanța", iso: "" },
-      { name: "Craiova", iso: "" }, 
+      { name: "Craiova", iso: "" },
       { name: "Rotterdam", iso: "" },
       { name: "Hague", iso: "" },
       { name: "Utrecht", iso: "" },
       { name: "Eindhoven", iso: "" },
-      { name: "Groningen", iso: "" }, 
+      { name: "Groningen", iso: "" },
       { name: "Shanghai", iso: "" },
       { name: "Mumbai", iso: "" },
       { name: "Shenzhen", iso: "" },
@@ -620,17 +614,17 @@ const countryList = [
       { name: "Karachi", iso: "" },
       { name: "Delhi", iso: "" },
       { name: "Kolkata", iso: "" },
-      { name: "Chennai", iso: "" }, 
+      { name: "Chennai", iso: "" },
       { name: "Tianjin", iso: "" },
       { name: "Chongqing", iso: "" },
       { name: "Chengdu", iso: "" },
       { name: "Nanjing", iso: "" },
-      { name: "Wuhan", iso: "" }, 
+      { name: "Wuhan", iso: "" },
       { name: "Seongnam", iso: "" },
       { name: "Suwon", iso: "" },
       { name: "Daejeon", iso: "" },
       { name: "Busan", iso: "" },
-      { name: "Incheon", iso: "" }, 
+      { name: "Incheon", iso: "" },
       { name: "Osaka", iso: "" },
       { name: "Nagoya", iso: "" },
       { name: "Sapporo", iso: "" },
@@ -638,101 +632,101 @@ const countryList = [
       { name: "Lahore", iso: "" },
       { name: "Faisalabad", iso: "" },
       { name: "Rawalpindi", iso: "" },
-      { name: "Multan", iso: "" }, 
+      { name: "Multan", iso: "" },
       { name: "Riyadh", iso: "" },
       { name: "Jeddah", iso: "" },
-      { name: "Tehran", iso: "" }, 
-      { name: "Baghdad", iso: "" }, 
-      { name: "Kuala Lumpur", iso: "" }, 
+      { name: "Tehran", iso: "" },
+      { name: "Baghdad", iso: "" },
+      { name: "Kuala Lumpur", iso: "" },
       { name: "George Town", iso: "" },
       { name: "Ipoh", iso: "" },
       { name: "Johor Bahru", iso: "" },
       { name: "Kota Kinabalu", iso: "" },
       { name: "São Paulo", iso: "" },
-      { name: "Rio de Janeiro", iso: "" }, 
+      { name: "Rio de Janeiro", iso: "" },
       { name: "Salvador", iso: "" },
       { name: "Brasília", iso: "" },
       { name: "Fortaleza", iso: "" },
       { name: "Guadalajara", iso: "" },
-      { name: "Monterrey", iso: "" }, 
+      { name: "Monterrey", iso: "" },
       { name: "Toronto", iso: "" },
       { name: "Montreal", iso: "" },
-      { name: "Vancouver", iso: "" }, 
-      { name: "Bogotá", iso: "" }, 
+      { name: "Vancouver", iso: "" },
+      { name: "Bogotá", iso: "" },
       { name: "Lima", iso: "" },
-      { name: "Santiago", iso: "" }, 
+      { name: "Santiago", iso: "" },
       { name: "Lagos", iso: "" },
-      { name: "Ibadan", iso: "" }, 
-      { name: "Kinshasa", iso: "" }, 
+      { name: "Ibadan", iso: "" },
+      { name: "Kinshasa", iso: "" },
       { name: "Johannesburg", iso: "" },
       { name: "Durban", iso: "" },
-      { name: "Cape Town", iso: "" }, 
-      { name: "Alexandria", iso: "" }, 
-      { name: "Nairobi", iso: "" }, 
-      { name: "Budapest", iso: "" }, 
-      { name: "Prague", iso: "" }, 
-      { name: "Krakow", iso: "" }, 
+      { name: "Cape Town", iso: "" },
+      { name: "Alexandria", iso: "" },
+      { name: "Nairobi", iso: "" },
+      { name: "Budapest", iso: "" },
+      { name: "Prague", iso: "" },
+      { name: "Krakow", iso: "" },
       { name: "Kyiv", iso: "" },
-      { name: "Kharkiv", iso: "" }, 
+      { name: "Kharkiv", iso: "" },
       { name: "Belgrade", iso: "" },
-      { name: "Sofia", iso: "" }, 
+      { name: "Sofia", iso: "" },
       { name: "Zagreb", iso: "" },
       { name: "Istanbul", iso: "" },
       { name: "Ankara", iso: "" },
       { name: "Sydney", iso: "" },
       { name: "Melbourne", iso: "" },
       { name: "Perth", iso: "" },
-      { name: "Brisbane", iso: "" }, 
-      { name: "Auckland", iso: "" }, 
-      { name: "Surabaya", iso: "" }, 
-      { name: "Bandung", iso: "" }, 
+      { name: "Brisbane", iso: "" },
+      { name: "Auckland", iso: "" },
+      { name: "Surabaya", iso: "" },
+      { name: "Bandung", iso: "" },
       { name: "Medan", iso: "" },
-      { name: "Pattaya", iso: "" }, 
+      { name: "Pattaya", iso: "" },
       { name: "Chiang Mai", iso: "" },
       { name: "Phnom Penh", iso: "" },
-      { name: "Hanoi", iso: "" }, 
-      { name: "Yangon", iso: "" }, 
-      { name: "Taipei", iso: "" }, 
-      { name: "Hiroshima", iso: "" }, 
-      { name: "Fukuoka", iso: "" }, 
-      { name: "Abu Dhabi", iso: "" }, 
-      { name: "Doha", iso: "" }, 
-      { name: "Kuwait City", iso: "" }, 
-      { name: "Amman", iso: "" }, 
-      { name: "Beirut", iso: "" }, 
-      { name: "Tashkent", iso: "" }, 
+      { name: "Hanoi", iso: "" },
+      { name: "Yangon", iso: "" },
+      { name: "Taipei", iso: "" },
+      { name: "Hiroshima", iso: "" },
+      { name: "Fukuoka", iso: "" },
+      { name: "Abu Dhabi", iso: "" },
+      { name: "Doha", iso: "" },
+      { name: "Kuwait City", iso: "" },
+      { name: "Amman", iso: "" },
+      { name: "Beirut", iso: "" },
+      { name: "Tashkent", iso: "" },
       { name: "Porto", iso: "" },
-      { name: "Zurich", iso: "" }, 
-      { name: "Geneva", iso: "" }, 
-      { name: "Brussels", iso: "" }, 
-      { name: "Ghent", iso: "" }, 
+      { name: "Zurich", iso: "" },
+      { name: "Geneva", iso: "" },
+      { name: "Brussels", iso: "" },
+      { name: "Ghent", iso: "" },
       { name: "Antwerp", iso: "" },
-      { name: "Oslo", iso: "" }, 
-      { name: "Copenhagen", iso: "" }, 
+      { name: "Oslo", iso: "" },
+      { name: "Copenhagen", iso: "" },
       { name: "Cork", iso: "" },
-      { name: "Accra", iso: "" }, 
-      { name: "Luanda", iso: "" }, 
-      { name: "Khartoum", iso: "" }, 
-      { name: "Casablanca", iso: "" }, 
-      { name: "Marrakech", iso: "" }, 
-      { name: "Algiers", iso: "" }, 
-      { name: "Tunis", iso: "" }, 
-      { name: "Calgary", iso: "" }, 
-      { name: "Edmonton", iso: "" }, 
-      { name: "Havana", iso: "" }, 
-      { name: "Medellín", iso: "" }, 
-      { name: "Salvador", iso: "" }, 
-      { name: "Fortaleza", iso: "" }, 
-      { name: "Quito", iso: "" }, 
-      { name: "Caracas", iso: "" }, 
+      { name: "Accra", iso: "" },
+      { name: "Luanda", iso: "" },
+      { name: "Khartoum", iso: "" },
+      { name: "Casablanca", iso: "" },
+      { name: "Marrakech", iso: "" },
+      { name: "Algiers", iso: "" },
+      { name: "Tunis", iso: "" },
+      { name: "Calgary", iso: "" },
+      { name: "Edmonton", iso: "" },
+      { name: "Havana", iso: "" },
+      { name: "Medellín", iso: "" },
+      { name: "Salvador", iso: "" },
+      { name: "Fortaleza", iso: "" },
+      { name: "Quito", iso: "" },
+      { name: "Caracas", iso: "" },
       { name: "Cincinnati", iso: "" },
       { name: "Providence", iso: "" },
       { name: "Salt Lake City", iso: "" },
       { name: "Honolulu", iso: "" },
       { name: "Anchorage", iso: "" },
       { name: "Riverside", iso: "" },
-      { name: "Adelaide", iso: "" }, 
-      { name: "Wellington", iso: "" }, 
+      { name: "Adelaide", iso: "" },
+      { name: "Wellington", iso: "" },
       { name: "Brașov", iso: "" },
       { name: "Galați", iso: "" },
       { name: "Ploiești", iso: "" },
@@ -743,12 +737,12 @@ const countryList = [
       { name: "Sibiu", iso: "" },
       { name: "Târgu Mureș", iso: "" },
       { name: "Bologna", iso: "" },
-      { name: "Florence", iso: "" }, 
+      { name: "Florence", iso: "" },
       { name: "Bari", iso: "" },
       { name: "Catania", iso: "" },
-      { name: "Venice", iso: "" }, 
+      { name: "Venice", iso: "" },
       { name: "Verona", iso: "" },
-      { name: "Padua", iso: "" }, 
+      { name: "Padua", iso: "" },
       { name: "Trieste", iso: "" },
       { name: "Bilbao", iso: "" },
       { name: "Alicante", iso: "" },
@@ -760,9 +754,9 @@ const countryList = [
       { name: "Granada", iso: "" },
       { name: "Thessaloniki", iso: "" },
       { name: "Patras", iso: "" },
-      { name: "Heraklion", iso: "" }, 
+      { name: "Heraklion", iso: "" },
       { name: "Larissa", iso: "" },
-      { name: "Rhodes", iso: "" }, 
+      { name: "Rhodes", iso: "" },
     ]
   }
 ];
