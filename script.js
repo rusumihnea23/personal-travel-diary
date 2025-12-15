@@ -16,8 +16,18 @@ themeButton.addEventListener('click', () => {
 aboutButton.addEventListener('click', () => {
   const aboutModal = new bootstrap.Modal(document.getElementById('aboutPopup'));
   aboutModal.show();
+  playMusic();
 });
 
+//Audio API
+function playMusic(){
+  var audio = new Audio('./resources/click-sound.mp3');
+  audio.volume = 0.35;
+  audio.play();
+  }
+document.querySelectorAll('button').forEach(btn => {
+  btn.addEventListener('click', playMusic);
+});
 //Add-Travel button 
 const addTravelButton = document.getElementById('AddTravel-Button');
 var travelLogs = [];
