@@ -1,6 +1,7 @@
 const themeButton = document.getElementById('Theme-Button');
 const aboutButton = document.getElementById('About-Button');
 const body = document.body;
+var markers = L.featureGroup();
 
 themeButton.addEventListener('click', () => {
   body.classList.toggle('darkmode');
@@ -11,30 +12,32 @@ themeButton.addEventListener('click', () => {
   }
 });
 
-// About-button opens popup
+// About-button 
 aboutButton.addEventListener('click', () => {
   const aboutModal = new bootstrap.Modal(document.getElementById('aboutPopup'));
   aboutModal.show();
 });
 
-// LEAFLET
-var map = L.map('map').setView([55.505, 15.09], 3);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-//LEAFLET END
-
-
-//Add-Travel button opens a new popup
+//Add-Travel button 
 const addTravelButton = document.getElementById('AddTravel-Button');
 var travelLogs = [];
+
 const travelModal = new bootstrap.Modal(document.getElementById('addTravelPopup'));
 addTravelButton.addEventListener('click', () => {
   travelModal.show();
 });
 
-// Function that suggests countries when i type also i can press a country and select it
+
+// Leaflet Initialization
+var map = L.map('map').setView([55.505, 15.09], 3);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+
+
+//Locations Sugestion
 function showSuggestions() {
   const input = document.getElementById("Country").value.toLowerCase();//isn't case sensitive
   const suggestionBox = document.getElementById("country-suggestions");
@@ -58,15 +61,39 @@ function showSuggestions() {
   });
 }
 
-//when a country is clicked it puts it in the input box+then after selection the dropdown menu dissapears
+
 function selectCountry(name, iso) {
   document.getElementById("Country").value = name;
   document.getElementById("country-suggestions").innerHTML = "";
   document.getElementById("Country").dataset.iso = iso;
 }
 
-//map marker function
-var markers = L.featureGroup();
+
+
+//Open the log in the accordion when marker is clicked
+function openLog(id) {
+  const logElement = document.getElementById(`log-${id}`);
+  if (!logElement) return;
+
+  
+  logElement.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const collapse = document.getElementById(`collapse-${id}`);
+  if (collapse && !collapse.classList.contains("show")) {
+    new bootstrap.Collapse(collapse, { toggle: true });
+  }
+}
+function closeLogs() {
+  for (const travelLog of travelLogs) {
+    const collapse = document.getElementById(`collapse-${travelLog.id}`);
+    if (collapse && collapse.classList.contains("show")) {
+      bootstrap.Collapse.getOrCreateInstance(collapse).hide();
+    }
+  }
+}
+//Main Functions
+
+//Add marker to the map
 function addMarker(travelLog) {
   fetch(`https://nominatim.openstreetmap.org/search?q=${travelLog.Country}&format=json&limit=1`)
     .then(res => res.json())
@@ -80,21 +107,29 @@ function addMarker(travelLog) {
       const lon = parseFloat(data[0].lon);
 
 
-      travelLog.Marker = L.marker([lat, lon]).addTo(map);;
+      travelLog.Marker = L.marker([lat, lon]).addTo(map);
       markers.addLayer(travelLog.Marker);
-      // optional if i want the name of the country on top of the marker
-      //marker.bindPopup(`<b>${country}</b>`).openPopup();
+
+
+    travelLog.Marker.on("click", () => {
+      closeLogs();
+      openLog(travelLog.id);
+    });
+
+      
+      
       map.fitBounds(markers.getBounds(), { padding: [50, 50], maxZoom: 5 });
     })
     .catch(() => alert("Nu pot sa ma pun ajutor!"));
 }
 
+//Save the travel log 
 let saveTravelButton = document.getElementById('Save-Button');
 saveTravelButton.addEventListener('click', () => {
   console.log('merge');
-  //travelModal.dispose();
+  
   if (!validateForm()) {
-    return; // stop saving if invalid
+    return; 
   }
   let travelLog = {};
   travelLog.id = travelLogs.length + 1;
@@ -112,6 +147,12 @@ saveTravelButton.addEventListener('click', () => {
   travelLog.activities = activities;
   travelLog.Memories = document.getElementById('travelNotes').value;
   travelLog.Expenses = document.getElementById('expenses').value;
+
+  travelLog.photos = [];
+
+for (const img of preview.querySelectorAll("img")) {
+  travelLog.photos.push(img.src);
+}
 
   travelLogs.push(travelLog);
   console.log(travelLogs);
@@ -133,35 +174,39 @@ saveTravelButton.addEventListener('click', () => {
   document.getElementById('travelNotes').value = null;
   document.getElementById('expenses').value = null;
   LoadActivity();
-
+  preview.innerHTML = "";
+  fileInput.value = "";
 });
 
 function LoadActivity() {
 
-  const log = travelLogs[travelLogs.length - 1];   // ← added
-  const id = log.id;                               // ← added
+  const log = travelLogs[travelLogs.length - 1];   
+  const id = log.id;                              
 
   const dayDiv = document.createElement('div');
   dayDiv.className = 'accordion';
-  dayDiv.id = `log-${id}`;                         // ← added (unique id for delete)
+  dayDiv.id = `log-${id}`;                         
 
   dayDiv.innerHTML = `
   <div class="accordion-item">
     <h2 class="accordion-header" >
       <button class="accordion-button" type="button" data-bs-toggle="collapse"
-        data-bs-target="#collapse-${id}" aria-expanded="true">   <!-- ← changed -->
+        data-bs-target="#collapse-${id}" aria-expanded="true">   <
         ${log.Country} - ${log.BeginningDate} to ${log.EndingDate}
       </button>
     </h2>
 
     <div id="collapse-${id}" class="accordion-collapse collapse"
-         data-bs-parent="#accordionExample">                  <!-- ← changed -->
+         data-bs-parent="#accordionExample">                  
       <div class="accordion-body">
         <strong>Trip Type:</strong> ${log.tripType} <br>
-        <strong>Memories:</strong> <p style="word-break: break-all;">${log.Memories}</p> <br>
+        <strong>Memories:</strong> <p class="memories-text"> ${log.Memories}</p> <br>
         <strong>Activities:</strong> ${log.activities.join(', ')} <br>
         <strong>Expenses:</strong> ${log.Expenses} <br>
+<strong>Photos:</strong><br>
+<div id="photos-${id}" class="photo-gallery"></div>
 
+<br>
       
         <button class="btn btn-danger mt-2" onclick="deleteLog(${id})">
           Delete
@@ -174,7 +219,23 @@ function LoadActivity() {
   `;
 
   document.getElementById('travelLogsContainer').appendChild(dayDiv);
+renderPhotos(log);
 }
+
+function renderPhotos(log) {
+  const container = document.getElementById(`photos-${log.id}`);
+  if (!container || !log.photos?.length) return;
+
+  container.innerHTML = "";
+
+  log.photos.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.loading = "lazy";
+    container.appendChild(img);
+  });
+}
+
 
 function deleteLog(id) {
 
@@ -224,6 +285,82 @@ function validateForm() {
   }
   return isValid;
 }
+
+//drag and drop
+
+const dropZone = document.getElementById("drop-zone");
+
+dropZone.addEventListener("drop", dropHandler);
+
+window.addEventListener("drop", (e) => {
+  if ([...e.dataTransfer.items].some((item) => item.kind === "file")) {
+    e.preventDefault();
+  }
+});
+
+dropZone.addEventListener("dragover", (e) => {
+  const fileItems = [...e.dataTransfer.items].filter(
+    (item) => item.kind === "file",
+  );
+  if (fileItems.length > 0) {
+    e.preventDefault();
+    if (fileItems.some((item) => item.type.startsWith("image/"))) {
+      e.dataTransfer.dropEffect = "copy";
+    } else {
+      e.dataTransfer.dropEffect = "none";
+    }
+  }
+});
+
+window.addEventListener("dragover", (e) => {
+  const fileItems = [...e.dataTransfer.items].filter(
+    (item) => item.kind === "file",
+  );
+  if (fileItems.length > 0) {
+    e.preventDefault();
+    if (!dropZone.contains(e.target)) {
+      e.dataTransfer.dropEffect = "none";
+    }
+  }
+});
+
+const preview = document.getElementById("preview");
+
+function dropHandler(ev) {
+  ev.preventDefault();
+  const files = [...ev.dataTransfer.items]
+    .map((item) => item.getAsFile())
+    .filter((file) => file);
+  displayImages(files);
+}
+
+const fileInput = document.getElementById("file-input");
+fileInput.addEventListener("change", (e) => {
+  displayImages(e.target.files);
+});
+
+const clearBtn = document.getElementById("clear-btn");
+clearBtn.addEventListener("click", () => {
+  preview.innerHTML = "";
+  fileInput.value = "";
+});
+
+
+function displayImages(files) {
+  for (const file of files) {
+    if (file.type.startsWith("image/")) {
+      const li = document.createElement("li");
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      img.alt = file.name;
+      li.appendChild(img);
+      li.appendChild(document.createTextNode(file.name));
+      preview.appendChild(li);
+    }
+  }
+}
+
+
 
 //The list of ISO Countries - we know its not idel but its the only way without an API call
 const countryList = [
@@ -760,3 +897,5 @@ const countryList = [
     ]
   }
 ];
+
+

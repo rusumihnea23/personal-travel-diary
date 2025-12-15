@@ -89,9 +89,9 @@
 
       <div class="modal-body">
         <form id="travelForm" novalidate>
-          <!-- Country +added the country suggestions  -->
-          <label class="form-label">Country</label>
-          <input id="Country" type="text" class="form-control" placeholder="Please enter country" required
+          <!-- Location -->
+          <label class="form-label">Location</label>
+          <input id="Country" type="text" class="form-control" placeholder="Please enter a location" required
             oninput="showSuggestions()">
           <div id="country-suggestions" class="list-group mt-1"></div>
 
@@ -150,13 +150,28 @@
 
           <!-- Photos -->
           <label class="form-label mt-3">Any photos?</label>
+            <label id="drop-zone">
+          Drop images here, or click to upload.
           <input type="file" id="file-input" multiple accept="image/*" />
-          <button id="clear-btn">Clear</button>
+          </label>
+        <ul id="preview"></ul>
+          <button id="clear-btn" type="button">Clear</button>
 
           <!-- Description -->
-          <label class="form-label mt-3">Memories</label>
-          <textarea id="travelNotes" class="form-control" rows="10"
-            placeholder="Describe your experience..."></textarea>
+          <div class="memories-container">
+
+  <div class="memories-header">
+    <label class="form-label">Memories</label>
+ 
+  </div>
+
+  <textarea id="travelNotes"
+    class="form-control"
+    rows="10"
+    placeholder="Describe your experience...">
+  </textarea>
+
+</div>
 
           <!-- Money spent -->
           <label class="form-label">Money spent</label>
